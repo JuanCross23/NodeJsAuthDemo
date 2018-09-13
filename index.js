@@ -10,7 +10,6 @@ app.use(express.json())
 MongoClient.connect(dbconfig.url, (err, database) => {
     if (err) return console.log(err)
                         
-    // Make sure you add the database name and not the collection name
     const db = database.db("auth")
     app.post('/authentication', function(req, res) {
         authenticate(db,req.body)
