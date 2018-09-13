@@ -1,6 +1,6 @@
 const express = require('express')
 const MongoClient = require('mongodb').MongoClient
-const authenticate = require('./authenticate')
+const authenticate = require('./modules/authenticate')
 const dbconfig = require('./config/db')
 
 const app = express()
