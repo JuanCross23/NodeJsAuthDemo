@@ -15,7 +15,10 @@ MongoClient.connect(dbconfig.url, (err, database) => {
     app.post('/authentication', function(req, res) {
         authenticate(db,req.body)
             .then(token => res.send(token))
-            .catch(error => res.send(error.toString()))
+            .catch(error => {
+                res.statusCode = 404
+                res.send(error.toString())
+            })
     })
     const port = 3920;
     app.listen(port, () => {
