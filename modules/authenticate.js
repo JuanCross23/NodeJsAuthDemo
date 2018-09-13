@@ -8,7 +8,7 @@ module.exports = function (db, user) {
     return new Promise((resolve, reject) => {
         db.collection("users").findOne(user, (err, item) => {
             if(err) reject(err)
-            else if(item == null) reject("No item found")
+            else if(item == null) reject("The user doesn't exist")
             else {
                 createToken(db, item._id)
                     .then(token => resolve(token))
