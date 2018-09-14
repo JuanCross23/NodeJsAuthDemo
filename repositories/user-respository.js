@@ -12,12 +12,12 @@ module.exports = class UserRepository {
             if(user.username && user.password)
                 this.db.collection("users").insertOne(user, (error, result) => {
                     if(error) 
-                        reject({error: 1, message: "The user already exists"})
+                        reject({code: 1, message: "The user already exists"})
                     else if(result.insertedCount > 0)
                         resolve("Sucessfull registration")
                 })
             else
-                reject({error: 0, message: "You need to send username and password"})
+                reject({code: 0, message: "You need to send username and password"})
         })
     }
 }

@@ -5,7 +5,10 @@ module.exports = function(app, userRepository) {
             .then(item => res.end(item))
             .catch(error => {
                 console.log(error)
-                res.statusCode = 400
+                if(error.code == 0)
+                    res.statusCode = 400
+                else if(error.code == 1)
+                    res.statusCode = 409
                 res.send(error)
             })
     })
