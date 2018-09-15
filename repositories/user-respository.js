@@ -1,3 +1,6 @@
+var mongodb = require('mongodb');
+var ObjectId = mongodb.ObjectID;
+
 module.exports = class UserRepository {
     constructor(db) {
         this.db = db
@@ -32,6 +35,31 @@ module.exports = class UserRepository {
                 })
             else
                 reject({code: 0, message: "You need to send username and password"})
+        })
+    }
+
+    update(user) {
+        return new Promise((resolve, reject) => {
+            const filter = { _id: new ObjectId(user._id) }
+            
+            this.db.collection("users").updateOne(
+                filter, 
+                { 
+                    $set: {
+                        username: user.username,
+                        password: user.password
+                    }
+                }, 
+                (error, result) => {
+                    if(error) 
+                        reject({code: 0, message:"The username is already in use"})
+                    else if (result.modifiedCount > 0)
+                        resolve()
+                    else if(result.matchedCount == 0)
+                        reject({code: 1, message: "No item matched the given ID"})
+                    else 
+                        reject({code: 2, message:"Don't know what happened but this shouldn´t happen"})
+            })
         })
     }
 }
