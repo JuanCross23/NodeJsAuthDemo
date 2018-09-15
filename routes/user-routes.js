@@ -29,6 +29,19 @@ module.exports = function(app, userRepository) {
     })
 
     app.put('/user', (req, res) => {
-        res.end()
+        userRepository
+            .update(req.body)
+            .then(() => {
+                res.statusCode = 204
+                res.end()
+            })
+            .catch(error => {
+                console.log(error)
+                if(error.code == 0)
+                    res.statusCode = 409
+                else if(error.code == 1)
+                    res.statusCode = 404
+                res.send(error)
+            })
     })
 }
