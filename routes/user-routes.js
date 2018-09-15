@@ -1,3 +1,6 @@
+var mongodb = require('mongodb');
+var ObjectId = mongodb.ObjectID;
+
 module.exports = function(app, userRepository) {
     /**
      * Método para crear usuarios
@@ -30,17 +33,20 @@ module.exports = function(app, userRepository) {
 
     app.put('/user', (req, res) => {
         const user = req.body;
+        
         if(!hasCorrectProperties(user)) {
             res.statusCode = 400
             res.send({ code: 0, message: "Invalid model" })
             return
         }
 
-        if(!idIsValid(req.body)) {
+        if(!idIsValid(user)) {
             res.statusCode = 400
             res.send({ code: 0, message: "Please provide a valid ID" })
             return
         }
+
+        user._id = new ObjectId(user._id)
 
         userRepository
             .update(req.body)
@@ -64,5 +70,5 @@ function hasCorrectProperties(user) {
 }
 
 function idIsValid(user) {
-    return typeof user._id === "string" && user._id.length == 12
+    return typeof user._id === "string" && user._id.length == 24
 }

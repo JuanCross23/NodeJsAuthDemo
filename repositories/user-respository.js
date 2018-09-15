@@ -1,5 +1,4 @@
-var mongodb = require('mongodb');
-var ObjectId = mongodb.ObjectID;
+
 
 module.exports = class UserRepository {
     constructor(db) {
@@ -40,7 +39,7 @@ module.exports = class UserRepository {
 
     update(user) {
         return new Promise((resolve, reject) => {
-            const filter = { _id: new ObjectId(user._id) }
+            const filter = { _id: user._id }
             
             this.db.collection("users").updateOne(
                 filter, 
