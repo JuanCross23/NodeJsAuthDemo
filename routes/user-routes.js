@@ -29,10 +29,16 @@ module.exports = function(app, userRepository) {
     })
 
     app.put('/user', (req, res) => {
-
-        if(!hasCorrectProperties(req.body)) {
+        const user = req.body;
+        if(!hasCorrectProperties(user)) {
             res.statusCode = 400
             res.send({ code: 0, message: "Invalid model" })
+            return
+        }
+
+        if(!idIsValid(req.body)) {
+            res.statusCode = 400
+            res.send({ code: 0, message: "Please provide a valid ID" })
             return
         }
 
@@ -55,4 +61,8 @@ module.exports = function(app, userRepository) {
 
 function hasCorrectProperties(user) {
     return user._id && user.username && user.password
+}
+
+function idIsValid(user) {
+    return typeof user._id === "string" && user._id.length == 12
 }
