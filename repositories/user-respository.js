@@ -3,6 +3,20 @@ module.exports = class UserRepository {
         this.db = db
     }
 
+    getAll() {
+        return new Promise((resolve, reject) => {
+            this.db.collection("users").find({}, {}).toArray((error, result) => {
+                if(error) {
+                    console.log(error.toString())
+                    reject({code:0, message:"Something happened!"})
+                }
+                else {
+                    resolve(result)
+                }
+            })
+        })
+    }
+
     /**
      * Guarda el usuario en la base de datos devolviendo una promesa
      * @param {User} user - Un objeto con una propiedad username y otra con propiedad password
