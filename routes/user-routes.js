@@ -27,4 +27,8 @@ module.exports = function(app, userRepository) {
                 res.send(error)
             })
     })
+
+    app.put('/user', (req, res) => {
+        res.end()
+    })
 }
