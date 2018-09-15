@@ -19,6 +19,9 @@ module.exports = function(app, userRepository) {
             })
     })
 
+    /**
+     * Método para obtener una lista de todos los usuarios
+     */
     app.get('/user', (req, res) => {
         userRepository
             .getAll()
@@ -31,6 +34,9 @@ module.exports = function(app, userRepository) {
             })
     })
 
+    /**
+     * Método para editar un usuario
+     */
     app.put('/user', (req, res) => {
         const user = req.body;
         
