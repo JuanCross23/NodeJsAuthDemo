@@ -46,7 +46,7 @@ module.exports = function(app, userRepository) {
             return
         }
 
-        if(!idIsValid(user)) {
+        if(!idIsValid(user._id)) {
             res.statusCode = 400
             res.send({ code: 0, message: "Please provide a valid ID" })
             return
@@ -70,7 +70,11 @@ module.exports = function(app, userRepository) {
             })
     })
     
-    app.delete("/user",(req, res) => {
+    app.delete("/user/:ID",(req, res) => {
+        if(!idIsValid(req.params.ID)) {
+            res.statusCode = 400;
+            res.send({code:0, message: "Please send a valid ID"})
+        }
         res.end()
     })
 }
@@ -79,6 +83,6 @@ function hasCorrectProperties(user) {
     return user._id && user.username && user.password
 }
 
-function idIsValid(user) {
-    return typeof user._id === "string" && user._id.length == 24
+function idIsValid(id) {
+    return typeof id === "string" && id.length == 24
 }
