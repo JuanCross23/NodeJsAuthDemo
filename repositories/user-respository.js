@@ -5,6 +5,21 @@ module.exports = class UserRepository {
         this.db = db
     }
 
+    delete(id) {
+        return new Promise ((resolve, reject) => {
+            this.db.collection("users").deleteOne({ _id:id }, (error, commandResult) => {
+                if(error || commandResult.result.ok != 1)
+                    reject({ code:1, message: "The command didn't complete" })
+                else if(commandResult.deletedCount != 1)
+                    reject({ code:2, message: "Couldn't find the item" })
+                else if(commandResult.deletedCount == 1)
+                    resolve()
+                else
+                    reject({ code:3, message: "This shouldn't happen :(" })
+            })
+        })
+    }
+
     getAll() {
         return new Promise((resolve, reject) => {
             this.db.collection("users").find({}, {}).toArray((error, result) => {
