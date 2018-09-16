@@ -70,12 +70,30 @@ module.exports = function(app, userRepository) {
             })
     })
     
+    /**
+     * Método para eliminar usuarios
+     */
     app.delete("/user/:ID",(req, res) => {
+        const userId = req.params.ID; 
         if(!idIsValid(req.params.ID)) {
             res.statusCode = 400;
             res.send({code:0, message: "Please send a valid ID"})
+            return
         }
-        res.end()
+
+        userRepository.delete(new ObjectId(userId))
+            .then(() =>{
+                res.statusCode = 204
+                res.end()
+            })
+            .catch(error => {
+                console.log(error)
+                if(error.code == 2)
+                    res.statusCode = 404
+                else
+                    res.statusCode = 500
+                res.send(error)
+            })
     })
 }
 
