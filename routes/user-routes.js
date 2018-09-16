@@ -69,6 +69,10 @@ module.exports = function(app, userRepository) {
                 res.send(error)
             })
     })
+    
+    app.delete("/user",(req, res) => {
+        res.end()
+    })
 }
 
 function hasCorrectProperties(user) {
