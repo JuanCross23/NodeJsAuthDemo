@@ -114,7 +114,7 @@ module.exports = function(app, userRepository, authenticationService) {
 }
 
 function hasCorrectProperties(user) {
-    return user._id && user.username && user.password
+    return user.username && user.password
 }
 
 function idIsValid(id) {
