@@ -1,11 +1,17 @@
 module.exports = class AuthenticationService {
+    constructor(db) {
+        this.db = db;
+    }
     verifyAuthorization(request) {
         const authorizationHeader = request.get('Authorization')
-        console.log(authorizationHeader)
-        
         return new Promise(resolve => {
-            if(authorizationHeader && hasValidFormat(authorizationHeader))
-                resolve(true)
+            if(authorizationHeader && hasValidFormat(authorizationHeader)) {
+                this.db.collection("sessions").findOne({token: authorizationHeader.slice(7)}, (err, item) => {
+                    if(err) resolve(false)
+                    else if(item == null) resolve(false)
+                    else resolve(true)
+                })
+            }
             else 
                 resolve(false)
         })
