@@ -4,17 +4,17 @@ module.exports = class AuthenticationService {
     }
     verifyAuthorization(request) {
         const authorizationHeader = request.get('Authorization')
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             if(authorizationHeader && hasValidFormat(authorizationHeader)) {
-                this.db.collection("sessions").findOne({token: authorizationHeader.slice(7)}, (err, item) => {
-                    if(err) resolve(false)
-                    else if(item == null) resolve(false)
-                    else if(item.expirationDate < new Date()) resolve(false)
-                    else resolve(true)
+                this.db.collection("sessions").findOne({ token: authorizationHeader.slice(7) }, (err, item) => {
+                    if(err) reject({ code: 500, message: "There was a problem, try again later" })
+                    else if(item == null) reject({ code: 401, message: "Not a valid token" })
+                    else if(item.expirationDate < new Date()) reject({ code: 401, message: "Token has expired" })
+                    else resolve()
                 })
             }
             else 
-                resolve(false)
+                reject({ code: 400, message: "No authorization header or not valid " })
         })
     }
 }
