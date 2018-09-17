@@ -16,21 +16,11 @@ module.exports = function(app, userRepository, authenticationService) {
     /**
      * Método para obtener una lista de todos los usuarios
      */
-    app.get('/user', async (req, res) => {
-        const isAuthenticated = await authenticationService.verifyAuthorization(req)
-        if(isAuthenticated) {
-            userRepository
-                .getAll()
-                .then(items => res.send(items))
-                .catch(error => {
-                    console.log(error)
-                    if(error.code == 0)
-                        res.statusCode = 500
-                    res.send(error)
-                })
-        } else {
-            sendUnauthorized(res)
-        }
+    app.get('/user', (req, res) => {
+        authenticationService.verifyAuthorization(req)
+            .then(() => userRepository.getAll())
+            .then(items => res.send(items))
+            .catch(error => sendError(res, error))
     })
 
     /**
