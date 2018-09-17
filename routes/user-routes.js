@@ -35,8 +35,7 @@ module.exports = function(app, userRepository, authenticationService) {
                     res.send(error)
                 })
         } else {
-            res.statusCode = 401
-            res.end()
+            sendUnauthorized(res)
         }
     })
 
@@ -78,8 +77,7 @@ module.exports = function(app, userRepository, authenticationService) {
                     res.send(error)
                 })
         } else {
-            res.statusCode = 401
-            res.end()
+            sendUnauthorized(res)
         }
     })
     
@@ -110,8 +108,7 @@ module.exports = function(app, userRepository, authenticationService) {
                     res.send(error)
                 })
         } else {
-            res.statusCode = 401
-            res.end()
+            sendUnauthorized(res)
         }
     })
 }
@@ -122,4 +119,9 @@ function hasCorrectProperties(user) {
 
 function idIsValid(id) {
     return typeof id === "string" && id.length == 24
+}
+
+function sendUnauthorized(res) {
+    res.statusCode = 401
+    res.end()
 }
