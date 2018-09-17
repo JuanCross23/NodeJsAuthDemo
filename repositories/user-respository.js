@@ -38,7 +38,7 @@ module.exports = class UserRepository {
      * Guarda el usuario en la base de datos devolviendo una promesa
      * @param {User} user - Un objeto con una propiedad username y otra con propiedad password
      */
-    save(user) {
+    insert(user) {
         return new Promise((resolve, reject) => {
             if(user.username && user.password)
                 this.db.collection("users").insertOne(user, (error, result) => {

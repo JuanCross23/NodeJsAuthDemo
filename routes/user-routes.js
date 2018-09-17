@@ -7,7 +7,7 @@ module.exports = function(app, userRepository, authenticationService) {
      */
     app.post('/user', function(req, res) {
         userRepository
-            .save(req.body)
+            .insert(req.body)
             .then(item => res.end(item))
             .catch(error => {
                 console.log(error)
