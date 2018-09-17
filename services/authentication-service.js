@@ -9,6 +9,7 @@ module.exports = class AuthenticationService {
                 this.db.collection("sessions").findOne({token: authorizationHeader.slice(7)}, (err, item) => {
                     if(err) resolve(false)
                     else if(item == null) resolve(false)
+                    else if(item.expirationDate < new Date()) resolve(false)
                     else resolve(true)
                 })
             }
