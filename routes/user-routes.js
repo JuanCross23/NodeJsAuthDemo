@@ -7,24 +7,10 @@ module.exports = function(app, userRepository, authenticationService) {
      */
     app.post('/user', function(req, res) {
         const user = req.body
-
-        if(!hasCorrectProperties(user)) {
-            res.statusCode = 400
-            res.send({ code: 0, message: "Invalid model" })
-            return
-        }
-
-        userRepository
-            .insert(user)
-            .then(item => res.end(item))
-            .catch(error => {
-                console.log(error)
-                if(error.code == 0)
-                    res.statusCode = 400
-                else if(error.code == 1)
-                    res.statusCode = 409
-                res.send(error)
-            })
+        verifyProperties(user)
+            .then(() => userRepository.insert(user))
+            .then(message => res.end(message))
+            .catch(error => sendError(res, error))
     })
 
     /**
@@ -132,4 +118,19 @@ function idIsValid(id) {
 function sendUnauthorized(res) {
     res.statusCode = 401
     res.end()
+}
+
+function verifyProperties(user) {
+    return new Promise((resolve, reject) => {
+        if(hasCorrectProperties(user))
+            resolve()
+        else 
+            reject({code: 400, message: "Invalid model"})
+    })
+}
+
+function sendError(res, error) {
+    console.log(error)
+    res.statusCode = error.code
+    res.send(error.message)
 }
