@@ -6,8 +6,16 @@ module.exports = function(app, userRepository, authenticationService) {
      * Método para crear usuarios
      */
     app.post('/user', function(req, res) {
+        const user = req.body
+
+        if(!hasCorrectProperties(user)) {
+            res.statusCode = 400
+            res.send({ code: 0, message: "Invalid model" })
+            return
+        }
+
         userRepository
-            .insert(req.body)
+            .insert(user)
             .then(item => res.end(item))
             .catch(error => {
                 console.log(error)
@@ -63,7 +71,7 @@ module.exports = function(app, userRepository, authenticationService) {
             user._id = new ObjectId(user._id)
     
             userRepository
-                .update(req.body)
+                .update(user)
                 .then(() => {
                     res.statusCode = 204
                     res.end()
