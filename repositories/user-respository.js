@@ -42,7 +42,7 @@ module.exports = class UserRepository {
         return new Promise((resolve, reject) => {
             this.db.collection("users").insertOne(user, (error, result) => {
                 if(error) 
-                    reject({code: 1, message: "The user already exists"})
+                    reject({code: 409, message: "The user already exists"})
                 else if(result.insertedCount > 0)
                     resolve("Sucessfull registration")
             })
