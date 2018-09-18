@@ -47,17 +47,14 @@ module.exports = function(app, userRepository, authenticationService) {
     })
 }
 
-function hasCorrectProperties(user) {
-    return user.username && user.password
-}
-
 function idIsValid(id) {
     return typeof id === "string" && id.length == 24
 }
 
 function verifyProperties(user) {
     return new Promise((resolve, reject) => {
-        if(hasCorrectProperties(user))
+        //Verificar que ambas propiedades existan en el objeto
+        if(user.username && user.password)
             resolve(user)
         else 
             reject({code: 400, message: "Invalid model"})
