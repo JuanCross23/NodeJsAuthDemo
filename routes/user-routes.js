@@ -47,10 +47,6 @@ module.exports = function(app, userRepository, authenticationService) {
     })
 }
 
-function idIsValid(id) {
-    return typeof id === "string" && id.length == 24
-}
-
 function verifyProperties(user) {
     return new Promise((resolve, reject) => {
         //Verificar que ambas propiedades existan en el objeto
@@ -63,7 +59,7 @@ function verifyProperties(user) {
 
 function verifyId(user) {
     return new Promise((resolve, reject) => {
-        if(idIsValid(user._id)) {
+        if(typeof user._id === "string" && user._id.length == 24) {
             user._id = new ObjectId(user._id)
             resolve(user)
         }
@@ -74,7 +70,7 @@ function verifyId(user) {
 
 function verifyOnlyId(id) {
     return new Promise((resolve, reject) => {
-        if(idIsValid(id)) {
+        if(typeof id === "string" && id.length == 24) {
             id = new ObjectId(id)
             resolve(id)
         }
