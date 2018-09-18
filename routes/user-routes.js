@@ -59,7 +59,7 @@ function verifyProperties(user) {
 
 function verifyId(user) {
     return new Promise((resolve, reject) => {
-        if(typeof user._id === "string" && user._id.length == 24) {
+        if(typeof user._id === "string" && user._id.length == 24 && user._id.match("^[0-9A-Fa-f]+$")) {
             user._id = new ObjectId(user._id)
             resolve(user)
         }
