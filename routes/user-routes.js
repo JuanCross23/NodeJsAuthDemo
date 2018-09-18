@@ -42,31 +42,14 @@ module.exports = function(app, userRepository, authenticationService) {
      * Método para eliminar usuarios
      */
     app.delete("/user/:ID", async (req, res) => {
-        const isAuthenticated = await authenticationService.verifyAuthorization(req)
-        if(isAuthenticated){
-            const userId = req.params.ID; 
-            if(!idIsValid(req.params.ID)) {
-                res.statusCode = 400;
-                res.send({code:0, message: "Please send a valid ID"})
-                return
-            }
-    
-            userRepository.delete(new ObjectId(userId))
-                .then(() =>{
-                    res.statusCode = 204
-                    res.end()
-                })
-                .catch(error => {
-                    console.log(error)
-                    if(error.code == 2)
-                        res.statusCode = 404
-                    else
-                        res.statusCode = 500
-                    res.send(error)
-                })
-        } else {
-            sendUnauthorized(res)
-        }
+        authenticationService.verifyAuthorization(req)
+        .then(() => verifyOnlyId(req.params.ID))
+        .then(id => userRepository.delete(id))
+        .then(() => {
+            res.statusCode = 204
+            res.end()
+        })
+        .catch(error => sendError(res, error))
     })
 }
 
@@ -97,6 +80,17 @@ function verifyId(user) {
         if(idIsValid(user._id)) {
             user._id = new ObjectId(user._id)
             resolve(user)
+        }
+        else 
+            reject({code: 400, message: "Please provide a valid ID"})
+    })
+}
+
+function verifyOnlyId(id) {
+    return new Promise((resolve, reject) => {
+        if(idIsValid(id)) {
+            id = new ObjectId(id)
+            resolve(id)
         }
         else 
             reject({code: 400, message: "Please provide a valid ID"})
