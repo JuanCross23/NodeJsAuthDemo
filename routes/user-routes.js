@@ -27,42 +27,15 @@ module.exports = function(app, userRepository, authenticationService) {
      * Método para editar un usuario
      */
     app.put('/user', async (req, res) => {
-        const isAuthenticated = await authenticationService.verifyAuthorization(req)
-        if(isAuthenticated) {
-
-            const user = req.body;
-            
-            if(!hasCorrectProperties(user)) {
-                res.statusCode = 400
-                res.send({ code: 0, message: "Invalid model" })
-                return
-            }
-    
-            if(!idIsValid(user._id)) {
-                res.statusCode = 400
-                res.send({ code: 0, message: "Please provide a valid ID" })
-                return
-            }
-    
-            user._id = new ObjectId(user._id)
-    
-            userRepository
-                .update(user)
-                .then(() => {
-                    res.statusCode = 204
-                    res.end()
-                })
-                .catch(error => {
-                    console.log(error)
-                    if(error.code == 0)
-                        res.statusCode = 409
-                    else if(error.code == 1)
-                        res.statusCode = 404
-                    res.send(error)
-                })
-        } else {
-            sendUnauthorized(res)
-        }
+        authenticationService.verifyAuthorization(req)
+            .then(() => verifyProperties(req.body))
+            .then(user => verifyId(user))
+            .then(user => userRepository.update(user))
+            .then(() => {
+                res.statusCode = 204
+                res.end()
+            })
+            .catch(error => sendError(res, error))
     })
     
     /**
@@ -113,9 +86,20 @@ function sendUnauthorized(res) {
 function verifyProperties(user) {
     return new Promise((resolve, reject) => {
         if(hasCorrectProperties(user))
-            resolve()
+            resolve(user)
         else 
             reject({code: 400, message: "Invalid model"})
+    })
+}
+
+function verifyId(user) {
+    return new Promise((resolve, reject) => {
+        if(idIsValid(user._id)) {
+            user._id = new ObjectId(user._id)
+            resolve(user)
+        }
+        else 
+            reject({code: 400, message: "Please provide a valid ID"})
     })
 }
 
