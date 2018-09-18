@@ -61,11 +61,6 @@ function idIsValid(id) {
     return typeof id === "string" && id.length == 24
 }
 
-function sendUnauthorized(res) {
-    res.statusCode = 401
-    res.end()
-}
-
 function verifyProperties(user) {
     return new Promise((resolve, reject) => {
         if(hasCorrectProperties(user))
