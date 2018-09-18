@@ -1,5 +1,3 @@
-
-
 module.exports = class UserRepository {
     constructor(db) {
         this.db = db
@@ -52,7 +50,7 @@ module.exports = class UserRepository {
     update(user) {
         return new Promise((resolve, reject) => {
             const filter = { _id: user._id }
-            
+
             this.db.collection("users").updateOne(
                 filter, 
                 { 
@@ -63,13 +61,13 @@ module.exports = class UserRepository {
                 }, 
                 (error, result) => {
                     if(error) 
-                        reject({code: 0, message:"The username is already in use"})
+                        reject({code: 409, message:"The username is already in use"})
                     else if (result.modifiedCount > 0)
                         resolve()
                     else if(result.matchedCount == 0)
-                        reject({code: 1, message: "No item matched the given ID"})
+                        reject({code: 404, message: "No item matched the given ID"})
                     else 
-                        reject({code: 2, message:"Don't know what happened but this shouldn´t happen"})
+                        reject({code: 500, message:"Don't know what happened but this shouldn´t happen"})
             })
         })
     }
