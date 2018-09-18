@@ -40,8 +40,8 @@ module.exports = function(app, userRepository, authenticationService) {
      */
     app.delete("/user/:ID", async (req, res) => {
         authenticationService.verifyAuthorization(req)
-        .then(() => verifyOnlyId(req.params.ID))
-        .then(id => userRepository.delete(id))
+        .then(() => verifyId({_id:req.params.ID}))
+        .then(user => userRepository.delete(user._id))
         .then(() => sendNoContent(res))
         .catch(error => sendError(res, error))
     })
@@ -62,17 +62,6 @@ function verifyId(user) {
         if(typeof user._id === "string" && user._id.length == 24) {
             user._id = new ObjectId(user._id)
             resolve(user)
-        }
-        else 
-            reject({code: 400, message: "Please provide a valid ID"})
-    })
-}
-
-function verifyOnlyId(id) {
-    return new Promise((resolve, reject) => {
-        if(typeof id === "string" && id.length == 24) {
-            id = new ObjectId(id)
-            resolve(id)
         }
         else 
             reject({code: 400, message: "Please provide a valid ID"})
