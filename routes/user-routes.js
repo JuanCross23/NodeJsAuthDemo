@@ -31,10 +31,7 @@ module.exports = function(app, userRepository, authenticationService) {
             .then(() => verifyProperties(req.body))
             .then(user => verifyId(user))
             .then(user => userRepository.update(user))
-            .then(() => {
-                res.statusCode = 204
-                res.end()
-            })
+            .then(sendNoContent(res))
             .catch(error => sendError(res, error))
     })
     
@@ -45,10 +42,7 @@ module.exports = function(app, userRepository, authenticationService) {
         authenticationService.verifyAuthorization(req)
         .then(() => verifyOnlyId(req.params.ID))
         .then(id => userRepository.delete(id))
-        .then(() => {
-            res.statusCode = 204
-            res.end()
-        })
+        .then(sendNoContent(res))
         .catch(error => sendError(res, error))
     })
 }
@@ -96,4 +90,9 @@ function sendError(res, error) {
     console.log(error)
     res.statusCode = error.code
     res.send(error.message)
+}
+
+function sendNoContent(res) {
+    res.statusCode = 204
+    res.end()
 }
